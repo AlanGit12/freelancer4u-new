@@ -5,5 +5,3 @@ Es werden zwei Rollen unterschieden:
 - **User**: Kann Jobs suchen, übernehmen und abschliessen.
 
 ![Use Case Diagramm](doc/uc-diagram.drawio.svg)
-
-Stand: Übung 4
