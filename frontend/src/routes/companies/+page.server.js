@@ -2,14 +2,17 @@ import axios from "axios";
 import { error } from '@sveltejs/kit';
 // Load environment variables from .env file for local development
 import 'dotenv/config';
+
 const API_BASE_URL = process.env.API_BASE_URL; // defined in frontend/.env
 
-export async function load() {
+export async function load({locals}) {
 
+    const jwt_token = locals.jwt_token;
     try {
         const companiesResponse = await axios({
             method: "get",
             url: `${API_BASE_URL}/api/company`,
+            headers: {Authorization: "Bearer " + jwt_token},
         })
         return {
             companies: companiesResponse.data
@@ -22,8 +25,13 @@ export async function load() {
 
     
 export const actions = {
-    createCompany: async ({ request }) => {
+    createCompany: async ({ request, locals}) => {
 
+
+        const jwt_token = locals.jwt_token;
+        if(!jwt_token){
+            throw error(401, "Authentication required")
+        }
         const data = await request.formData();
         const comp = {
             name: data.get('name'),
@@ -36,6 +44,7 @@ export const actions = {
                 url: `${API_BASE_URL}/api/company`,
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: "Bearer " + jwt_token,
                 },
                 data: comp,
             });

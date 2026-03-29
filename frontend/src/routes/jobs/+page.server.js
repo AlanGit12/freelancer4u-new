@@ -4,17 +4,26 @@ import { error } from '@sveltejs/kit';
 import 'dotenv/config';
 const API_BASE_URL = process.env.API_BASE_URL; // defined in frontend/.env
 
-export async function load() {
+export async function load({locals}) {
 
+    const jwt_token = locals.jwt_token;
+
+    if(!jwt_token){
+        return {
+            jobs: []
+        };
+    }
     try {
         // Could be done in parallel with Promise.all(...)
         const jobsResponse = await axios({
             method: "get",
             url: `${API_BASE_URL}/api/job`,
+            headers: {Authorization: "Bearer "+ jwt_token},
         })
         const companiesResponse = await axios({
             method: "get",
             url: `${API_BASE_URL}/api/company`,
+            headers: {Authorization: "Bearer "+ jwt_token},
         })
 
         return {
@@ -28,7 +37,12 @@ export async function load() {
 }
 
 export const actions = {
-    createJob: async ({ request }) => {
+    createJob: async ({ request, locals }) => {
+        const jwt_token= locals.jwt_token;
+
+        if(!jwt_token){
+            throw error (401, "Authentication required");
+        }
 
         const data = await request.formData();
         const job = {
@@ -45,6 +59,7 @@ export const actions = {
                 url: `${API_BASE_URL}/api/job`,
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: "Bearer "+ jwt_token,
                 },
                 data: job,
             });
