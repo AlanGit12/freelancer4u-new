@@ -1,13 +1,14 @@
 <script>
   import favicon from "$lib/assets/favicon.svg";
   import "./styles.css";
+
   let { data, children } = $props();
-  let { user, isAuthenticated } = data;
 </script>
 
 <svelte:head>
   <link rel="icon" href={favicon} />
 </svelte:head>
+
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">Freelancer4U</a>
@@ -22,30 +23,31 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        {#if isAuthenticated}
+        {#if data.isAuthenticated && data.user?.user_roles?.includes("admin")}
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/companies"
-              >Companies</a
-            >
+            <a class="nav-link" aria-current="page" href="/companies">Companies</a>
           </li>
         {/if}
-        {#if isAuthenticated}
-        <li class="nav-item">
+
+        {#if data.isAuthenticated}
+          <li class="nav-item">
             <a class="nav-link" href="/account">Account</a>
           </li>
         {/if}
-         
-        {#if isAuthenticated}
+
+        {#if data.isAuthenticated}
           <li class="nav-item">
             <a class="nav-link" href="/jobs">Jobs</a>
           </li>
         {/if}
       </ul>
+
       <div class="d-flex">
-        {#if isAuthenticated}
-          <span class="navbar-text me-2">{user.name}</span>
+        {#if data.isAuthenticated}
+          <span class="navbar-text me-2">{data.user?.name}</span>
           <form method="POST" action="/logout" style="display: inline;">
             <button type="submit" class="btn btn-primary">Log Out</button>
           </form>
@@ -57,6 +59,7 @@
     </div>
   </div>
 </nav>
+
 <div class="container mt-3">
   {@render children()}
 </div>
