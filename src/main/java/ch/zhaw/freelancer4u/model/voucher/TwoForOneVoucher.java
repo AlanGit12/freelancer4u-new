@@ -4,7 +4,7 @@ import java.util.List;
 
 import ch.zhaw.freelancer4u.model.Job;
 import ch.zhaw.freelancer4u.model.JobType;
-import lombok.RequiredArgsConstructor;
+
 
 public class TwoForOneVoucher implements Voucher{
     

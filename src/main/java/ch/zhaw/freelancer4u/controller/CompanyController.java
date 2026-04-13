@@ -60,4 +60,18 @@ public class CompanyController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("/company/{id}")
+public ResponseEntity<String> deleteCompanyById(@PathVariable String id) {
+    if (!userService.userHasRole("admin")) {
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    if (!companyRepository.existsById(id)) {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    companyRepository.deleteById(id);
+    return new ResponseEntity<>("DELETED", HttpStatus.OK);
+}
 }
